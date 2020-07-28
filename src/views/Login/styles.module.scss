@@ -1,0 +1,40 @@
+.loginContainer {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.loginInputs {
+	height: fit-content;
+	width: 300px;
+	text-align: center;
+	img {
+		width: 300px;
+	}
+	input {
+		width: 80%;
+		border-radius: 30px;
+		border: 1px solid #c4bfef;
+		padding: 10px 20px;
+		margin: 10px auto;
+		background-color: transparent;
+		color: white;
+		font-size: 16px;
+		outline: none;
+		&::placeholder {
+			color: white;
+		}
+	}
+	button {
+		border-radius: 20px;
+		border: none;
+		padding: 5px 15px;
+		outline: none;
+		background-color: #735fed;
+		color: white;
+		margin-top: 10px;
+		font-size: 16px;
+	}
+}
