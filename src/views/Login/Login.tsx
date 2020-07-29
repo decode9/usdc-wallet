@@ -4,11 +4,13 @@ import styles from './styles.module.scss';
 import { verifyUser } from '../../store/action';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { createTables } from '../../utils/sqlite/crud';
 
 const Login = ({ auth, action }: any) => {
 	useEffect(() => {
 		console.log(auth);
 		action.verifyUser();
+		createTables()
 	});
 
 	return (

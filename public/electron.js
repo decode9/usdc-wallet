@@ -14,6 +14,9 @@ function createWindow() {
 		height: 680,
 		minHeight: 800,
 		minWidth: 800,
+		webPreferences: {
+			nodeIntegration: true,
+		},
 	});
 	mainWindow.loadURL(
 		isDev
