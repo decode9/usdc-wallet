@@ -25,33 +25,3 @@ export const run = (sql: any, params = []) => {
         })
     })
 }
-
-export const get = (sql: any, params = []) => {
-    return new Promise((resolve, reject) => {
-        db.get(sql, params, function (err: any, result: any) {
-            if (err) {
-                console.log('Error in SQL' + sql);
-                console.log(err);
-                reject(err);
-                return
-            }
-
-            resolve(result)
-        })
-    })
-}
-
-export const all = (sql: any, params = []) => {
-    return new Promise((resolve, reject) => {
-        db.all(sql, params, function (err: any, result: any) {
-            if (err) {
-                console.log('Error in SQL' + sql);
-                console.log(err);
-                reject(err);
-                return
-            }
-
-            resolve(result)
-        })
-    })
-}

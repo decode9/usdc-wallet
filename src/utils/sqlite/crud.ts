@@ -1,42 +1,118 @@
 import Tableschemas from './schemas'
 import { run } from './dbConnect';
-
-const constructSQL = (schema: any, table: string) => {
-    let sql = 'CREATE TABLE IF NOT EXISTS ' + table;
-    let tableValues = '(';
-
-    for (let column in schema) {
-        tableValues += column;
-        let count = 0
-        for (let option in schema[column]) {
-            count++
-            let value = schema[column][option];
-            switch (option) {
-                case 'type':
-                    tableValues += ' ' + value;
-                    break;
-                case 'primaryKey':
-                    if (value) tableValues += ' PRIMARY KEY';
-                    break;
-                case 'nullable':
-                    if (!value) tableValues += ' NOT NULL';
-                    break;
-                case 'unique':
-                    if (value) tableValues += ' UNIQUE';
-                    break;
-            }
-        }
-        if (count != schema[column].length) tableValues += ', '
-    }
-    tableValues += ')';
-    sql += ' ' + tableValues;
-    return sql;
-}
-
+import { constructSQL, filterSQL, selectionSQL, insertSQL, updateSQL } from './builders';
 
 export const createTables = () => {
-    for (let schema of Tableschemas) {
-        let table = constructSQL(schema.colums, schema.table);
-        run(table);
-    }
+	try {
+		for (let schema of Tableschemas) {
+			let table = constructSQL(schema.colums, schema.table);
+			run(table);
+		}
+	} catch (error) {
+		throw new Error(error);
+	}
 }
+
+export const getData = async (table: any, filters: any = {}, selection = []) => {
+	try {
+		let sql = `SELECT * FROM ${table}`;
+
+		if (selection.length) {
+			sql = selectionSQL(selection);
+			sql += ` FROM ${table}`;
+		}
+
+		if (filters.length) {
+			let sqlFilter = filterSQL(filters)
+			sql += ` ${sqlFilter}`;
+		}
+
+		let result;
+
+		await run(sql).then((res) => {
+			result = res;
+		}, (err) => {
+			result = err;
+		})
+
+		return result;
+	} catch (error) {
+		throw new Error(error);
+	}
+}
+
+export const insertData = async (table: any, data: any = {}) => {
+	try {
+		let sql = `INSERT INTO ${table}`;
+		let result;
+
+		if (!data.length) throw new Error('NO DATA TO INSERT');
+
+		let datas = insertSQL(data);
+
+		sql += ` ${datas[0]} ${datas[1]}`;
+
+		await run(sql).then((res) => {
+			result = res;
+		}, (err) => {
+			result = err;
+		})
+
+		return result;
+	} catch (error) {
+		throw new Error(error);
+	}
+}
+
+export const updateData = async (table: any, data: any = {}, filters: any = {}) => {
+	try {
+		let sql = `UPDATE ${table}`;
+
+
+		if (!data.length) throw new Error('NO DATA TO UPDATE');
+
+		let update = updateSQL(data);
+		sql += ` ${update}`;
+
+		if (filters.length) {
+			let sqlFilter = filterSQL(filters)
+			sql += ` ${sqlFilter}`;
+		}
+
+		let result;
+
+		await run(sql).then((res) => {
+			result = res;
+		}, (err) => {
+			result = err;
+		})
+
+		return result;
+	} catch (error) {
+		throw new Error(error);
+	}
+}
+
+export const deleteData = async (table: any, filters: any = {}) => {
+	try {
+		let sql = `DELETE FROM ${table}`;
+
+		if (filters.length) {
+			let sqlFilter = filterSQL(filters)
+			sql += ` ${sqlFilter}`;
+		}
+
+		let result;
+
+		await run(sql).then((res) => {
+			result = res;
+		}, (err) => {
+			result = err;
+		})
+
+		return result;
+	} catch (error) {
+		throw new Error(error);
+	}
+}
+
