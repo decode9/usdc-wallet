@@ -4,11 +4,17 @@ const BrowserWindow = electron.BrowserWindow;
 
 const path = require('path');
 const isDev = require('electron-is-dev');
+const { sqlite3 } = require('sqlite3');
 
 let mainWindow;
 
 function createWindow() {
-	mainWindow = new BrowserWindow({ width: 900, height: 680, minHeight: 800, minWidth: 800 });
+	mainWindow = new BrowserWindow({
+		width: 900,
+		height: 680,
+		minHeight: 800,
+		minWidth: 800,
+	});
 	mainWindow.loadURL(
 		isDev
 			? 'http://localhost:3000'
