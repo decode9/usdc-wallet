@@ -1,3 +1,3 @@
-export const actionObject = (type: any, payload = null) => {
+export const actionObject = (type: any, payload: any = null) => {
     return { type, payload };
 }

@@ -2,11 +2,14 @@ import Tableschemas from './schemas'
 import { run } from './dbConnect';
 import { constructSQL, filterSQL, selectionSQL, insertSQL, updateSQL } from './builders';
 
-export const createTables = () => {
+export const createTables = async () => {
 	try {
 		for (let schema of Tableschemas) {
 			let table = constructSQL(schema.colums, schema.table);
-			run(table);
+
+			await run(table).then((result) => {
+				if (result) console.log(`TABLE ${schema.table} CREATED SUCCESSFULLY`);
+			});
 		}
 	} catch (error) {
 		throw new Error(error);
@@ -22,7 +25,7 @@ export const getData = async (table: any, filters: any = {}, selection = []) => 
 			sql += ` FROM ${table}`;
 		}
 
-		if (filters.length) {
+		if (Object.keys(filters).length) {
 			let sqlFilter = filterSQL(filters)
 			sql += ` ${sqlFilter}`;
 		}
@@ -46,7 +49,7 @@ export const insertData = async (table: any, data: any = {}) => {
 		let sql = `INSERT INTO ${table}`;
 		let result;
 
-		if (!data.length) throw new Error('NO DATA TO INSERT');
+		if (!Object.keys(data).length) throw new Error('NO DATA TO INSERT');
 
 		let datas = insertSQL(data);
 
@@ -69,7 +72,7 @@ export const updateData = async (table: any, data: any = {}, filters: any = {}) 
 		let sql = `UPDATE ${table}`;
 
 
-		if (!data.length) throw new Error('NO DATA TO UPDATE');
+		if (!Object.keys(data).length) throw new Error('NO DATA TO UPDATE');
 
 		let update = updateSQL(data);
 		sql += ` ${update}`;

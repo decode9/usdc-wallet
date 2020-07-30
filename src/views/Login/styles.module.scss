@@ -23,6 +23,7 @@
 		color: white;
 		font-size: 16px;
 		outline: none;
+		text-align: center;
 		&::placeholder {
 			color: white;
 		}
@@ -37,5 +38,16 @@
 		margin: 10px 10px 0px 10px;
 		font-size: 16px;
 		cursor: pointer;
+		&:disabled {
+			cursor: default;
+			background-color: #8675f1af;
+			color: rgba(255, 255, 255, 0.747);
+		}
+	}
+	.error {
+		color: red;
+		margin-top: 0px;
+		text-align: left;
+		font-size: 12px;
 	}
 }
