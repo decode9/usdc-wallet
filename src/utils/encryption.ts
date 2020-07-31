@@ -3,9 +3,9 @@ const algorithm = 'aes-192-cbc';
 
 export const encrypt = async (string: string) => {
     return new Promise((resolve, reject) => {
+
         let password = crypto.randomBytes(20).toString('hex');
         let salt = crypto.randomBytes(20).toString('hex');
-        let prepare = crypto.randomBytes(20).toString('hex');
 
         const hmac = crypto.createHmac('sha256', password);
         hmac.update(salt);
@@ -27,27 +27,18 @@ export const encrypt = async (string: string) => {
 
         cipher.on('end', () => {
             lastPass = salt + encrypted + password;
-            const hmac2 = crypto.createHmac('sha256', lastPass + prepare);
-            hmac2.update(string);
-            lastPass += hmac2.digest('hex');
             resolve(lastPass);
         });
 
-
-
-        cipher.write(prepare);
+        cipher.write(string);
 
         cipher.end();
     })
 }
 
 
-export const decryptValidate = async (pass: string, encrypt: string) => {
+export const decrypt = async (string: string) => {
     return new Promise((resolve, reject) => {
-
-        let string = encrypt.slice(0, 112);
-        let realPassword = encrypt.slice(112);
-
         let encrypted = string.slice(40, 72);
 
         let password = string.slice(-40);
@@ -70,11 +61,7 @@ export const decryptValidate = async (pass: string, encrypt: string) => {
         })
 
         decipher.on('end', () => {
-            const hmac2 = crypto.createHmac('sha256', string + decrypted);
-            hmac2.update(pass);
-            let encryptedPassword = hmac2.digest('hex');
-            let validation = encryptedPassword === realPassword;
-            resolve(validation);
+            resolve(decrypted);
         });
 
         decipher.write(encrypted, 'hex');

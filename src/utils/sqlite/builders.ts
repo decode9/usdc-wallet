@@ -27,7 +27,7 @@ export const constructSQL = (schema: any, table: string) => {
             if (count !== Object.keys(schema).length) tableValues += ', '
         }
         tableValues += ')';
-        sql += ' ' + tableValues;
+        sql += ' ' + tableValues + ';';
         return sql;
     } catch (error) {
         throw new Error(error);

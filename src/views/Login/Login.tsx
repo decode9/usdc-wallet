@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Logo from '../../assets/img/tcw-logo-white.png';
-import styles from './styles.module.scss';
+import './styles.module.scss';
 import { verifyUser, register, login } from '../../store/action';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -79,8 +79,8 @@ const Login = ({ auth, action }: any) => {
 	};
 
 	return (
-		<div className={styles.loginContainer}>
-			<div className={styles.loginInputs}>
+		<div className='loginContainer'>
+			<div className='loginInputs'>
 				<img src={Logo} alt='Logo' />
 
 				<input
@@ -92,7 +92,7 @@ const Login = ({ auth, action }: any) => {
 					}
 				/>
 				{!validation.username && form.username !== '' ? (
-					<p className={styles.error}>
+					<p className='error'>
 						El Usuario es requerido. Minimo 4 Digitos. Maximo 15 Digitos, Solo
 						numeros y letras
 					</p>
@@ -107,7 +107,7 @@ const Login = ({ auth, action }: any) => {
 					}
 				/>
 				{!validation.password && form.password !== '' ? (
-					<p className={styles.error}>
+					<p className='error'>
 						La contrasena es requerida. Minimo 4 Digitos. Maximo 20 Digitos,
 						Solo numeros y letras
 					</p>
@@ -131,7 +131,7 @@ const Login = ({ auth, action }: any) => {
 							}
 						/>
 						{!validation.confirm_password && form.confirm_password !== '' ? (
-							<p className={styles.error}>
+							<p className='error'>
 								La confirmacion de contrasena es requerida. Debe coincidir con
 								la contrasena. Minimo 4 Digitos. Maximo 20 Digitos, Solo numeros
 								y letras

@@ -3,7 +3,7 @@ import { LOGIN_ASYNC, REGISTER_ASYNC, VERIFY_USER_ASYNC } from './action-types';
 const initialState = {
     username: '',
     isAuth: false,
-    user: null,
+    user: {},
     isRegister: false,
 }
 

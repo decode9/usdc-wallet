@@ -1,22 +1,26 @@
 import Tableschemas from './schemas'
-import { run } from './dbConnect';
+import DataConnect from './dbConnect';
 import { constructSQL, filterSQL, selectionSQL, insertSQL, updateSQL } from './builders';
+
+const dbConnect = new DataConnect();
 
 export const createTables = async () => {
 	try {
 		for (let schema of Tableschemas) {
 			let table = constructSQL(schema.colums, schema.table);
 
-			await run(table).then((result) => {
+			await dbConnect.run(table).then((result) => {
 				if (result) console.log(`TABLE ${schema.table} CREATED SUCCESSFULLY`);
 			});
+
+			console.log('run exec');
 		}
 	} catch (error) {
 		throw new Error(error);
 	}
 }
 
-export const getData = async (table: any, filters: any = {}, selection = []) => {
+export const getData = async (table: any, filters: any = {}, selection: any = []) => {
 	try {
 		let sql = `SELECT * FROM ${table}`;
 
@@ -32,7 +36,7 @@ export const getData = async (table: any, filters: any = {}, selection = []) => 
 
 		let result;
 
-		await run(sql).then((res) => {
+		await dbConnect.run(sql).then((res) => {
 			result = res;
 		}, (err) => {
 			result = err;
@@ -54,8 +58,9 @@ export const insertData = async (table: any, data: any = {}) => {
 		let datas = insertSQL(data);
 
 		sql += ` ${datas[0]} ${datas[1]}`;
-
-		await run(sql).then((res) => {
+		console.log('Running?')
+		await dbConnect.run(sql).then((res) => {
+			console.log(res);
 			result = res;
 		}, (err) => {
 			result = err;
@@ -84,7 +89,7 @@ export const updateData = async (table: any, data: any = {}, filters: any = {}) 
 
 		let result;
 
-		await run(sql).then((res) => {
+		await dbConnect.run(sql).then((res) => {
 			result = res;
 		}, (err) => {
 			result = err;
@@ -107,7 +112,7 @@ export const deleteData = async (table: any, filters: any = {}) => {
 
 		let result;
 
-		await run(sql).then((res) => {
+		await dbConnect.run(sql).then((res) => {
 			result = res;
 		}, (err) => {
 			result = err;
