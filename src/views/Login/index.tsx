@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Logo from '../../assets/img/tcw-logo-white.png';
-import './styles.module.scss';
+import './styles.scss';
 import { verifyUser, register, login } from '../../store/action';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';

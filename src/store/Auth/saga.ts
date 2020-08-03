@@ -1,5 +1,5 @@
 import { call, takeLatest, put } from 'redux-saga/effects';
-import { VERIFY_USER, VERIFY_USER_ASYNC, REGISTER, LOGIN } from './action-types';
+import { VERIFY_USER, VERIFY_USER_ASYNC, REGISTER, LOGIN, LOGIN_ASYNC } from './action-types';
 import { createTables, getData, actionObject, encryptPassword, insertData, validatePassword } from '../../utils';
 
 function* verifyUserAsync() {
@@ -50,8 +50,11 @@ function* loginUserAsync({ payload }: any) {
 
         let user = yield call(getData, 'users', { username: ['=', data.username] });
 
-        const encryptedPassword = yield call(validatePassword, data.password, user[0].password);
-        console.log(encryptedPassword);
+        const auth = yield call(validatePassword, data.password, user[0].password);
+
+        const authOptions = { isAuth: auth, username: data.username }
+
+        yield put(actionObject(LOGIN_ASYNC, authOptions));
 
     } catch (error) {
         console.log(error);
