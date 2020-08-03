@@ -1,20 +1,15 @@
 import { call, takeLatest, put } from 'redux-saga/effects';
-import { VERIFY_USER, VERIFY_USER_ASYNC, REGISTER } from './action-types';
-import { createTables, getData, actionObject, encryptPassword, /* insertData */ } from '../../utils';
+import { VERIFY_USER, VERIFY_USER_ASYNC, REGISTER, LOGIN } from './action-types';
+import { createTables, getData, actionObject, encryptPassword, insertData, validatePassword } from '../../utils';
 
 function* verifyUserAsync() {
     try {
 
-        console.log('tables');
         yield call(createTables);
-
-        console.log('tables created');
 
         let user = yield call(getData, 'users');
 
-        console.log(user);
-
-        let exists = user ? true : false;
+        let exists = user.length ? true : false;
 
         yield put(actionObject(VERIFY_USER_ASYNC, exists));
     } catch (error) {
@@ -23,7 +18,7 @@ function* verifyUserAsync() {
 
 }
 
-function* registerUser({ payload }: any) {
+function* registerUserAsync({ payload }: any) {
     try {
 
         const data = payload;
@@ -36,11 +31,27 @@ function* registerUser({ payload }: any) {
 
         const saveData = { username: data.username, password: encryptedPassword };
 
-        console.log('SAVING DATA')/* 
-        const newUser = yield call(insertData, 'users', saveData); */
-        console.log('data saved?')
-        /* console.log(newUser); */
+        const newUser = yield call(insertData, 'users', saveData);
 
+        if (newUser.lastInsertRowid) {
+            yield put(actionObject(VERIFY_USER_ASYNC, true));
+        }
+
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+function* loginUserAsync({ payload }: any) {
+    try {
+
+        const data = payload;
+
+        let user = yield call(getData, 'users', { username: ['=', data.username] });
+
+        const encryptedPassword = yield call(validatePassword, data.password, user[0].password);
+        console.log(encryptedPassword);
 
     } catch (error) {
         console.log(error);
@@ -52,5 +63,9 @@ export function* watchVerifyUser() {
 }
 
 export function* watchRegisterUser() {
-    yield takeLatest(REGISTER, registerUser);
+    yield takeLatest(REGISTER, registerUserAsync);
+}
+
+export function* watchLoginUser() {
+    yield takeLatest(LOGIN, loginUserAsync);
 }

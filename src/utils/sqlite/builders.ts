@@ -35,10 +35,10 @@ export const constructSQL = (schema: any, table: string) => {
 }
 
 export const filterSQL = (filters: any) => {
-    let sqlFilter = ' WHERE';
+    let sqlFilter = 'WHERE';
     let count = 0;
     for (let filter in filters) {
-        sqlFilter = ` ${filter} ${filters[filter][0]} ${filters[filter][1]}`;
+        sqlFilter += (typeof filters[filter][1] == 'string') ? ` ${filter} ${filters[filter][0]} '${filters[filter][1]}'` : ` ${filter} ${filters[filter][0]} ${filters[filter][1]}`;
         count++;
         if (count !== Object.keys(filters).length) sqlFilter += ', ';
     }
@@ -62,8 +62,9 @@ export const insertSQL = (data: any) => {
     let count = 0;
     for (let value in data) {
         count++;
-        datas += ` ${value}`;
-        values += ` ${data[value]}`;
+        datas += `${value}`;
+
+        values += (typeof data[value] == 'string') ? `'${data[value]}'` : `${data[value]}`;
 
         if (count !== Object.keys(data).length) {
             datas += ', ';

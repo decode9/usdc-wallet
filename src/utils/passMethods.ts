@@ -7,6 +7,7 @@ export const encryptPassword = async (password: string) => {
     const privat = crypto.randomBytes(20).toString('hex');
 
     let encrypted = '';
+
     await encrypt(privat).then((result) => {
         encrypted += result;
     })
@@ -15,13 +16,13 @@ export const encryptPassword = async (password: string) => {
     hmac2.update(password);
     let encryptedPassword = hmac2.digest('hex');
 
-    return encryptedPassword;
+    return encrypted + encryptedPassword;
 
 }
 
 export const validatePassword = async (password: string, encrypted: string) => {
-    let string = encrypted.slice(0, 112);
-    let realPassword = encrypted.slice(112);
+    let string = encrypted.slice(0, 208);
+    let realPassword = encrypted.slice(-64);
 
     let privat = ''
     await decrypt(string).then((result) => {

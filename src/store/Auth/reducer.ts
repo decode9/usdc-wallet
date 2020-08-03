@@ -1,9 +1,8 @@
-import { LOGIN_ASYNC, REGISTER_ASYNC, VERIFY_USER_ASYNC } from './action-types';
+import { LOGIN_ASYNC, VERIFY_USER_ASYNC } from './action-types';
 
 const initialState = {
     username: '',
     isAuth: false,
-    user: {},
     isRegister: false,
 }
 
@@ -13,9 +12,6 @@ const authReducer = (state: any = initialState, { type, payload }: any) => {
             return { ...state, isRegister: payload };
 
         case LOGIN_ASYNC:
-            return { ...state, ...payload };
-
-        case REGISTER_ASYNC:
             return { ...state, ...payload };
 
         default:

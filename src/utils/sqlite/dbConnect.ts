@@ -1,33 +1,32 @@
-const sqlite3 = window.require('sqlite3').verbose();
-const dbFile = `C:\\Users\\jorge\\Proyectos\\Test\\electron-react\\src\\assets\\sqlite.sqlite3`;
-
+import Database from 'better-sqlite3'
 
 class DataConnect {
 
     db: any;
 
     constructor() {
-        this.db = new sqlite3.Database(dbFile, (err: any) => {
-            (err) ? console.log('Could not connected to database', err) : console.log('Connection success');
-        })
+        this.db = new Database('sqlite2.db');
     }
 
     run(sql: string) {
         return new Promise((resolve, reject) => {
-            console.log('this happend?')
+            const stmt = this.db.prepare(sql);
+            const result = stmt.run();
 
-            this.db.run(sql, [], (err: any, result: any) => {
-                console.log('result?')
+            if (result.code === 'SQLITE_ERROR') { reject(result); return };
 
-                if (err) {
-                    console.log('Error in SQL' + sql);
-                    console.log(err);
-                    reject(err);
-                    return
-                }
+            resolve(result);
+        })
+    }
 
-                resolve(result);
-            }, () => { console.log('complete??') })
+    getMany(sql: string) {
+        return new Promise((resolve, reject) => {
+            const stmt = this.db.prepare(sql);
+            const result = stmt.all();
+
+            if (result.code === 'SQLITE_ERROR') { reject(result); return };
+
+            resolve(result);
         })
     }
 }

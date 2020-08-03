@@ -13,7 +13,6 @@ export const createTables = async () => {
 				if (result) console.log(`TABLE ${schema.table} CREATED SUCCESSFULLY`);
 			});
 
-			console.log('run exec');
 		}
 	} catch (error) {
 		throw new Error(error);
@@ -35,11 +34,11 @@ export const getData = async (table: any, filters: any = {}, selection: any = []
 		}
 
 		let result;
-
-		await dbConnect.run(sql).then((res) => {
+		
+		await dbConnect.getMany(sql).then((res) => {
 			result = res;
 		}, (err) => {
-			result = err;
+			throw new Error(err);
 		})
 
 		return result;
@@ -58,12 +57,12 @@ export const insertData = async (table: any, data: any = {}) => {
 		let datas = insertSQL(data);
 
 		sql += ` ${datas[0]} ${datas[1]}`;
-		console.log('Running?')
+
 		await dbConnect.run(sql).then((res) => {
 			console.log(res);
 			result = res;
 		}, (err) => {
-			result = err;
+			throw new Error(err);
 		})
 
 		return result;
@@ -92,7 +91,7 @@ export const updateData = async (table: any, data: any = {}, filters: any = {}) 
 		await dbConnect.run(sql).then((res) => {
 			result = res;
 		}, (err) => {
-			result = err;
+			throw new Error(err);
 		})
 
 		return result;
@@ -115,7 +114,7 @@ export const deleteData = async (table: any, filters: any = {}) => {
 		await dbConnect.run(sql).then((res) => {
 			result = res;
 		}, (err) => {
-			result = err;
+			throw new Error(err);
 		})
 
 		return result;

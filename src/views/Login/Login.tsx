@@ -15,7 +15,7 @@ const Login = ({ auth, action }: any) => {
 
 	useEffect(() => {
 		action.verifyUser();
-	}, []);
+	}, []); 
 
 	const [validation, setValidation]: any = useState({
 		username: false,
@@ -115,7 +115,7 @@ const Login = ({ auth, action }: any) => {
 				{auth.isRegister ? (
 					<button
 						disabled={!validation.loginValid}
-						onClick={action.login(form)}
+						onClick={() => action.login(form)}
 					>
 						Iniciar Sesion
 					</button>

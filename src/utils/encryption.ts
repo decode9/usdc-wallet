@@ -4,31 +4,28 @@ const algorithm = 'aes-192-cbc';
 export const encrypt = async (string: string) => {
     return new Promise((resolve, reject) => {
 
-        let password = crypto.randomBytes(20).toString('hex');
-        let salt = crypto.randomBytes(20).toString('hex');
+        const password = crypto.randomBytes(20).toString('hex');
+        const salt = crypto.randomBytes(20).toString('hex');
 
-        const hmac = crypto.createHmac('sha256', password);
-        hmac.update(salt);
+        const key = crypto.scryptSync(password, salt, 24);
 
-        const key = hmac.digest('hex');
+        const iv = crypto.randomBytes(16);
 
-        const cipher = crypto.createCipher(algorithm, key);
+        const StringIV = iv.toString('hex');
+
+        const cipher = crypto.createCipheriv(algorithm, key, iv);
 
         let encrypted = '';
+        let lastPass = '';
 
         cipher.on('readable', () => {
             let chunk;
             while (null !== (chunk = cipher.read())) {
                 encrypted += chunk.toString('hex');
+                lastPass = salt + encrypted + StringIV + password;
+                resolve(lastPass);
             }
         })
-
-        let lastPass = '';
-
-        cipher.on('end', () => {
-            lastPass = salt + encrypted + password;
-            resolve(lastPass);
-        });
 
         cipher.write(string);
 
@@ -39,17 +36,15 @@ export const encrypt = async (string: string) => {
 
 export const decrypt = async (string: string) => {
     return new Promise((resolve, reject) => {
-        let encrypted = string.slice(40, 72);
 
-        let password = string.slice(-40);
-        let salt = string.slice(0, 40);
+        const encrypted = string.slice(40, 136);
+        const iv = Buffer.from(string.slice(136, 168), 'hex');
+        const password = string.slice(-40);
+        const salt = string.slice(0, 40);
 
-        const hmac = crypto.createHmac('sha256', password);
-        hmac.update(salt);
+        const key = crypto.scryptSync(password, salt, 24);
 
-        const key = hmac.digest('hex');
-
-        const decipher = crypto.createDecipher(algorithm, key);
+        const decipher = crypto.createDecipheriv(algorithm, key, iv);
 
         let decrypted = '';
 
@@ -57,12 +52,9 @@ export const decrypt = async (string: string) => {
             let chunk;
             while (null !== (chunk = decipher.read())) {
                 decrypted += chunk.toString('utf8');
+                resolve(decrypted);
             }
         })
-
-        decipher.on('end', () => {
-            resolve(decrypted);
-        });
 
         decipher.write(encrypted, 'hex');
 

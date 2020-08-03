@@ -87,3 +87,7 @@ typings/
 
 # Electron-Forge
 out/
+
+#databaseFile
+sqlite.db
+sqlite2.db
