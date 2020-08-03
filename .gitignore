@@ -89,5 +89,6 @@ typings/
 out/
 
 #databaseFile
-sqlite.db
-sqlite2.db
+*.db
+*.sqlite
+*.sqlite3
